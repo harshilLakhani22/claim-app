@@ -235,8 +235,8 @@ export function ClaimForm({ initialData, onSuccess, onCancel, isModal = false }:
       </SectionCard>
 
       {/* STICKY SAVE BAR */}
-      <div className={`sticky bottom-6 mt-8 bg-white/90 backdrop-blur-xl border border-slate-200/60 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 transition-all rounded-2xl ${isModal ? 'absolute bottom-0 w-full rounded-t-none rounded-b-2xl border-none' : ''}`}>
-        <div className="flex justify-between items-center w-full px-2 sm:px-4">
+      <div className={`sticky z-50 transition-all ${isModal ? 'bottom-0 mt-8 w-[calc(100%+3rem)] -mx-6 bg-white/95 backdrop-blur-xl border-t border-slate-200/60 p-5 shadow-[0_-8px_30px_rgb(0,0,0,0.08)]' : 'bottom-6 mt-8 bg-white/90 backdrop-blur-xl border border-slate-200/60 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl'}`}>
+        <div className="flex justify-between items-center w-full px-2 sm:px-4 max-w-full">
           <div className="flex items-center gap-3 hidden md:flex">
             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
               <Save className="w-4 h-4 text-slate-400" />

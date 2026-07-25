@@ -41,7 +41,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </div>
 
         {/* Modal Body - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-6 relative pb-32">
+        <div className="flex-1 overflow-y-auto px-6 pt-6 pb-0">
           {children}
         </div>
         
