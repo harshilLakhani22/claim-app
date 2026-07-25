@@ -19,8 +19,13 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const refreshClaims = () => {
-    setClaims(getClaims());
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const refreshClaims = async () => {
+    setIsLoading(true);
+    const data = await getClaims();
+    setClaims(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -29,7 +34,6 @@ export default function AdminDashboard() {
       router.push("/admin/login");
     } else {
       refreshClaims();
-      setIsLoading(false);
     }
   }, [router]);
 
@@ -38,10 +42,12 @@ export default function AdminDashboard() {
     router.push("/");
   };
 
-  const handleSeedData = () => {
-    seedDatabase(seedData);
-    refreshClaims();
-    alert("Seed data successfully injected!");
+  const handleSeedData = async () => {
+    setIsSeeding(true);
+    await seedDatabase(seedData);
+    await refreshClaims();
+    setIsSeeding(false);
+    alert("Seed data successfully injected into Firebase!");
   };
 
   if (isLoading) {
@@ -147,8 +153,8 @@ export default function AdminDashboard() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button onClick={handleSeedData} variant="outline" size="sm" className="bg-slate-900/50 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-all h-9 rounded-lg">
-              Seed Test Data
+            <Button onClick={handleSeedData} disabled={isSeeding} variant="outline" size="sm" className="bg-slate-900/50 border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-all h-9 rounded-lg">
+              {isSeeding ? "Seeding..." : "Seed Test Data"}
             </Button>
             <div className="h-4 w-px bg-slate-800 mx-1"></div>
             <Link href="/">

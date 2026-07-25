@@ -82,7 +82,7 @@ export function ClaimForm({ initialData, onSuccess, onCancel, isModal = false }:
     defaultValues: getInitialValues() as ClaimFormValues,
   });
 
-  const onSubmit = (data: ClaimFormValues) => {
+  const onSubmit = async (data: ClaimFormValues) => {
     setIsSubmitting(true);
     try {
       const formattedData = {
@@ -112,9 +112,9 @@ export function ClaimForm({ initialData, onSuccess, onCancel, isModal = false }:
       };
 
       if (editId) {
-        updateClaim(editId, formattedData);
+        await updateClaim(editId, formattedData);
       } else {
-        saveClaim(formattedData);
+        await saveClaim(formattedData);
       }
       
       if (!isModal) {

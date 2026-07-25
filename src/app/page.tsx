@@ -17,9 +17,14 @@ export default function Home() {
   const [activeView, setActiveView] = useState<"form" | "claims">("form");
   const [editClaim, setEditClaim] = useState<ClaimData | null>(null);
   const [claims, setClaims] = useState<ClaimData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSeeding, setIsSeeding] = useState(false);
 
-  const refreshClaims = () => {
-    setClaims(getClaims());
+  const refreshClaims = async () => {
+    setIsLoading(true);
+    const data = await getClaims();
+    setClaims(data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -39,10 +44,12 @@ export default function Home() {
     closeEditModal();
   };
 
-  const handleSeedData = () => {
-    seedDatabase(seedData);
-    refreshClaims();
-    alert("Seed data successfully injected!");
+  const handleSeedData = async () => {
+    setIsSeeding(true);
+    await seedDatabase(seedData);
+    await refreshClaims();
+    setIsSeeding(false);
+    alert("Seed data successfully injected into Firebase!");
   };
 
   return (
@@ -87,8 +94,8 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 order-2 md:order-3">
-            <Button onClick={handleSeedData} variant="outline" size="sm" className="bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all h-9 rounded-lg font-semibold shadow-sm">
-              <Database className="w-4 h-4 mr-2" /> <span className="hidden sm:inline">Seed Data</span><span className="sm:hidden">Seed</span>
+            <Button onClick={handleSeedData} disabled={isSeeding} variant="outline" size="sm" className="bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all h-9 rounded-lg font-semibold shadow-sm">
+              <Database className="w-4 h-4 mr-2" /> <span className="hidden sm:inline">{isSeeding ? "Seeding..." : "Seed Data"}</span><span className="sm:hidden">{isSeeding ? "..." : "Seed"}</span>
             </Button>
             <div className="h-4 w-px bg-slate-200 mx-1"></div>
             <Link href="/admin">
@@ -141,7 +148,16 @@ export default function Home() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {claims.length === 0 ? (
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-16 text-slate-400 font-medium bg-slate-50 rounded-xl">
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                            Loading records from Firebase...
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : claims.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center py-16 text-slate-400 font-medium bg-slate-50 rounded-xl">
                           No claims found. Please add a new claim or seed test data.
