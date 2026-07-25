@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getClaims } from "@/lib/storage";
+import { getClaims, seedDatabase, deleteClaim } from "@/lib/storage";
 import { ClaimData } from "@/types/claim";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Edit2, LayoutDashboard, ShieldCheck, Database, ListTodo, PlusCircle } from "lucide-react";
+import { Edit2, LayoutDashboard, ShieldCheck, Database, ListTodo, PlusCircle, Trash2 } from "lucide-react";
 import { ClaimForm } from "@/components/ClaimForm";
 import { Modal } from "@/components/Modal";
 import Link from "next/link";
 
-import { seedDatabase } from "@/lib/storage";
 import { seedData } from "@/lib/seedData";
 
 export default function Home() {
@@ -19,6 +18,7 @@ export default function Home() {
   const [claims, setClaims] = useState<ClaimData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSeeding, setIsSeeding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const refreshClaims = async () => {
     setIsLoading(true);
@@ -33,6 +33,15 @@ export default function Home() {
 
   const handleEdit = (claim: ClaimData) => {
     setEditClaim(claim);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this claim record? This action cannot be undone.")) {
+      setIsDeleting(id);
+      await deleteClaim(id);
+      await refreshClaims();
+      setIsDeleting(null);
+    }
   };
 
   const closeEditModal = () => {
@@ -186,14 +195,31 @@ export default function Home() {
                             </div>
                           </TableCell>
                           <TableCell className="text-right py-4">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => handleEdit(claim)}
-                              className="border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 font-semibold transition-all rounded-lg"
-                            >
-                              <Edit2 className="w-4 h-4 mr-2" /> Edit
-                            </Button>
+                            <div className="flex justify-end gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => handleEdit(claim)}
+                                disabled={isDeleting === claim.id}
+                                className="border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200 font-semibold transition-all rounded-lg"
+                              >
+                                <Edit2 className="w-4 h-4 mr-2" /> Edit
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => handleDelete(claim.id)}
+                                disabled={isDeleting === claim.id}
+                                className="border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 font-semibold transition-all rounded-lg"
+                              >
+                                {isDeleting === claim.id ? (
+                                  <div className="w-4 h-4 mr-2 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                )}
+                                Delete
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))
