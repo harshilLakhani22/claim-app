@@ -5,12 +5,12 @@ import { getClaims, seedDatabase, deleteClaim } from "@/lib/storage";
 import { ClaimData } from "@/types/claim";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Edit2, LayoutDashboard, ShieldCheck, Database, ListTodo, PlusCircle, Trash2 } from "lucide-react";
-import { ClaimForm } from "@/components/ClaimForm";
-import { Modal } from "@/components/Modal";
+import { PlusCircle, ListTodo, ShieldCheck, Database, LayoutDashboard, Pencil, Trash2, Edit2 } from "lucide-react";
 import Link from "next/link";
-
 import { seedData } from "@/lib/seedData";
+import { Modal } from "@/components/Modal";
+import { ClaimForm } from "@/components/ClaimForm";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 export default function Home() {
   const [activeView, setActiveView] = useState<"form" | "claims">("form");
@@ -19,6 +19,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSeeding, setIsSeeding] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const refreshClaims = async () => {
     setIsLoading(true);
@@ -35,12 +36,17 @@ export default function Home() {
     setEditClaim(claim);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this claim record? This action cannot be undone.")) {
-      setIsDeleting(id);
-      await deleteClaim(id);
+  const handleDeleteClick = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteConfirmId) {
+      setIsDeleting(deleteConfirmId);
+      await deleteClaim(deleteConfirmId);
       await refreshClaims();
       setIsDeleting(null);
+      setDeleteConfirmId(null);
     }
   };
 
@@ -208,7 +214,7 @@ export default function Home() {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={() => handleDelete(claim.id)}
+                                onClick={() => handleDeleteClick(claim.id)}
                                 disabled={isDeleting === claim.id}
                                 className="border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 font-semibold transition-all rounded-lg"
                               >
@@ -249,6 +255,16 @@ export default function Home() {
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal 
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Record"
+        description="Are you sure you want to permanently delete this claim record? This action cannot be undone."
+        isProcessing={!!isDeleting}
+      />
     </div>
   );
 }

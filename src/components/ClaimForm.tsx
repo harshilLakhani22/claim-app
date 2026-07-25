@@ -74,6 +74,27 @@ export function ClaimForm({ initialData, onSuccess, onCancel, isModal = false }:
         (mappedData as any)[key] = "";
       }
     }
+    
+    // Fix date formatting for input type="date" which requires YYYY-MM-DD
+    const parseDate = (dateStr: string) => {
+      if (!dateStr) return "";
+      // If it's already YYYY-MM-DD, return it
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) return dateStr;
+      // If it's DD-MM-YYYY, convert it
+      if (dateStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
+        const [day, month, year] = dateStr.split('-');
+        return `${year}-${month}-${day}`;
+      }
+      return dateStr;
+    };
+
+    if (mappedData.reportingDate) {
+      mappedData.reportingDate = parseDate(mappedData.reportingDate);
+    }
+    if (mappedData.createdDate) {
+      mappedData.createdDate = parseDate(mappedData.createdDate);
+    }
+
     return mappedData;
   };
 
