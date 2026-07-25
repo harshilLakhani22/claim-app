@@ -50,7 +50,7 @@ export default function Home() {
       
       {/* Premium Glassmorphism Navbar */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
-        <div className="max-w-[1600px] w-full mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-3 md:py-0 md:h-16 flex flex-wrap items-center justify-between gap-y-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20">
               <ShieldCheck className="w-5 h-5 text-white" />
@@ -61,11 +61,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-1 justify-center max-md:hidden">
-            <div className="bg-slate-100/50 p-1 rounded-xl border border-slate-200/50 flex gap-1 shadow-inner">
+          <div className="flex flex-1 justify-center w-full md:w-auto order-3 md:order-2">
+            <div className="bg-slate-100/50 p-1 rounded-xl border border-slate-200/50 flex gap-1 shadow-inner w-full md:w-auto justify-center">
               <button
                 onClick={() => setActiveView("form")}
-                className={`flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                className={`flex-1 md:flex-none justify-center flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                   activeView === "form" 
                     ? "bg-white text-indigo-600 shadow-sm border border-slate-200/60" 
                     : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
@@ -75,7 +75,7 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setActiveView("claims")}
-                className={`flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                className={`flex-1 md:flex-none justify-center flex items-center gap-2 px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                   activeView === "claims" 
                     ? "bg-white text-indigo-600 shadow-sm border border-slate-200/60" 
                     : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
@@ -86,14 +86,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 order-2 md:order-3">
             <Button onClick={handleSeedData} variant="outline" size="sm" className="bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all h-9 rounded-lg font-semibold shadow-sm">
-              <Database className="w-4 h-4 mr-2" /> Seed Data
+              <Database className="w-4 h-4 mr-2" /> <span className="hidden sm:inline">Seed Data</span><span className="sm:hidden">Seed</span>
             </Button>
             <div className="h-4 w-px bg-slate-200 mx-1"></div>
             <Link href="/admin">
               <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg font-semibold">
-                <LayoutDashboard className="w-4 h-4 mr-2" /> Admin
+                <LayoutDashboard className="w-4 h-4 mr-1 sm:mr-2" /> Admin
               </Button>
             </Link>
           </div>
